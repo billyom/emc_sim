@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 import sys
 import random
@@ -44,6 +46,8 @@ def main():
                        help='EMC capacity is 2**shift')
     parser.add_argument('--segs', dest='segs',  type=int,
                        help='No. of ways/locations at which a given flow can be inserted in EMC.')
+    parser.add_argument('--random', dest='random_seed',  type=int, default=None,
+                       help='For testing/repeatabiltity allow fixing of the random seed.')
     parser.add_argument('--verbose', '-v', dest='verbose',  type=bool,
                        help='Verbose')
 
@@ -53,7 +57,7 @@ def main():
     emc_capacity = max_seg_hash + 1
 
     print "EMC capacity is %d (1<<%d)" % (emc_capacity, args.shift)
-    random.seed(42)
+    random.seed(args.random_seed)
 
     # create the flows and their hash
     # flow ids start at 1 as we use flowid==0 to indicate an empty slot
@@ -80,7 +84,9 @@ def main():
     print "EMC %.0f%% full. %d of %d" % (100*(num_taken_slots)/emc_capacity,
                                               num_taken_slots,
                                               emc_capacity)
-    print "EMC hit rate %.0f%%*" % (100*(num_taken_slots)/args.flows)
+    print "EMC hit rate %.0f%% %d/%d" % (100*(num_taken_slots)/args.flows,
+                                         num_taken_slots,
+                                         args.flows)
 
 
 if __name__ == '__main__':
